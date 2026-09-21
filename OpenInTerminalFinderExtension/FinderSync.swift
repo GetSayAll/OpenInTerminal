@@ -75,6 +75,13 @@ class FinderSync: FIFinderSync {
             }
 
         case .toolbarItemMenu:
+            // Finder uses this callback for a toolbar click. Honor Quick Toggle
+            // immediately instead of presenting the regular picker menu.
+            if DefaultsManager.shared.isQuickToggle {
+                performQuickToggleAction()
+                return NSMenu()
+            }
+
             // the toolbar menu never groups items into a submenu
             let isCustomMenuApplyToToolbar = DefaultsManager.shared.isCustomMenuApplyToToolbar
             if isCustomMenuApplyToToolbar {
@@ -262,6 +269,17 @@ class FinderSync: FIFinderSync {
 //    }
     
     // MARK: - Menu Actions
+
+    private func performQuickToggleAction() {
+        switch DefaultsManager.shared.quickToggleType {
+        case .openWithDefaultEditor:
+            openDefaultEditor()
+        case .copyPathToClipboard:
+            copyPathToClipboard()
+        default:
+            openDefaultTerminal()
+        }
+    }
     
     @objc func openDefaultTerminal() {
         let terminal = DefaultsManager.shared.defaultTerminal ?? SupportedApps.terminal.app
