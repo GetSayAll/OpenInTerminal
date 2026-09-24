@@ -80,10 +80,13 @@ echo "==> Signing identity: $SIGN_ID"
 # identifier is prefixed with the Team ID. Xcode expands that variable when it
 # signs; plain `codesign` does not, so it is expanded here into temporary copies
 # before signing. TeamIdentifierPrefix includes the trailing dot.
-TEAM_ID="$(sed -n 's/.*(\([A-Z0-9]\{10\}\))$/\1/p' <<<"$SIGN_ID")"
+if [[ -z "${TEAM_ID:-}" ]]; then
+  TEAM_ID="$(sed -n 's/.*(\([A-Z0-9]\{10\}\))$/\1/p' <<<"$SIGN_ID")"
+fi
 if [[ -z "$TEAM_ID" ]]; then
   echo "!! Could not read a Team ID out of the signing identity: $SIGN_ID" >&2
-  echo "   Expected a trailing \"(TEAMID)\". Set SIGN_ID to a Developer ID identity." >&2
+  echo "   Expected a trailing \"(TEAMID)\", or set TEAM_ID explicitly." >&2
+  echo "   Apple Development identities often need TEAM_ID=<your 10-char team>." >&2
   exit 1
 fi
 echo "==> Team ID: $TEAM_ID"
