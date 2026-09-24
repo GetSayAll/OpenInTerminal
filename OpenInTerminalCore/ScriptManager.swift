@@ -31,10 +31,7 @@ public class ScriptManager {
             repeat with theArgument in argv
                 set theCommand to theCommand & quoted form of (theArgument as text) & " "
             end repeat
-            tell application "Finder"
-                activate
-                do shell script theCommand
-            end tell
+            do shell script theCommand
         end openApp
         """
         return script
@@ -273,4 +270,3 @@ public class ScriptManager {
         return script
     }
 }
-

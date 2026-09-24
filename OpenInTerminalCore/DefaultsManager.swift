@@ -98,13 +98,14 @@ public class DefaultsManager {
     
     public var defaultTerminal: App? {
         get {
-            guard let terminalName = Defaults[.defaultTerminal] else { return nil }
-            // resolve supported apps case-insensitively so the canonical name and bundleId are used
-            if let supported = SupportedApps.from(name: terminalName) {
-                return supported.app
+            if let terminalName = Defaults[.defaultTerminal] {
+                // resolve supported apps case-insensitively so the canonical name and bundleId are used
+                if let supported = SupportedApps.from(name: terminalName) {
+                    return supported.app
+                }
+                return App(name: terminalName, type: .terminal)
             }
-            let app = App(name: terminalName, type: .terminal)
-            return app
+            return SupportedApps.terminal.app
         }
         
         set {
@@ -115,13 +116,14 @@ public class DefaultsManager {
     
     public var defaultEditor: App? {
         get {
-            guard let editorName = Defaults[.defaultEditor] else { return nil }
-            // resolve supported apps case-insensitively so the canonical name and bundleId are used
-            if let supported = SupportedApps.from(name: editorName) {
-                return supported.app
+            if let editorName = Defaults[.defaultEditor] {
+                // resolve supported apps case-insensitively so the canonical name and bundleId are used
+                if let supported = SupportedApps.from(name: editorName) {
+                    return supported.app
+                }
+                return App(name: editorName, type: .editor)
             }
-            let app = App(name: editorName, type: .editor)
-            return app
+            return SupportedApps.textEdit.app
         }
         
         set {
