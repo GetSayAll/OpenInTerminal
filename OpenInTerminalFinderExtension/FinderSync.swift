@@ -98,7 +98,14 @@ class FinderSync: FIFinderSync {
     }
     
     var scriptPath: URL? {
-        return try? FileManager.default.url(for: .applicationScriptsDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        guard let baseURL = try? FileManager.default.url(for: .applicationScriptsDirectory,
+                                                         in: .userDomainMask,
+                                                         appropriateFor: nil,
+                                                         create: true) else {
+            return nil
+        }
+        let extensionFolder = Bundle.main.bundleIdentifier ?? "wang.jianing.app.OpenInTerminal.OpenInTerminalFinderExtension"
+        return baseURL.appendingPathComponent(extensionFolder, isDirectory: true)
     }
 
     func fileScriptPath(fileName: String) -> URL? {

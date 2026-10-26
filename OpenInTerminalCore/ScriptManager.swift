@@ -112,7 +112,13 @@ public class ScriptManager {
     public func getScriptURL(with name: String) -> URL? {
         let scriptFolderURL = try? FileManager.default.url(for: .applicationScriptsDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         guard let url = scriptFolderURL else { return nil }
+        // FinderSync scripts live in the application-scripts subdirectory named
+        // after the extension bundle. The host app creates that directory when
+        // installing scripts; looking in the parent directory makes every
+        // Finder action silently return before executing the AppleScript.
+        let extensionFolder = Bundle.main.bundleIdentifier ?? "wang.jianing.app.OpenInTerminal.OpenInTerminalFinderExtension"
         let fileURL = url
+            .appendingPathComponent(extensionFolder, isDirectory: true)
             .appendingPathComponent(name)
             .appendingPathExtension("scpt")
         return fileURL
